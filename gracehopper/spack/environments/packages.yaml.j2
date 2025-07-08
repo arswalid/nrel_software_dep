@@ -1,0 +1,15 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+packages:
+  cuda:
+    externals:
+      - spec: cuda@12.9.0
+        prefix: /tmp/scratch/apps/gracehopper/cuda/12.9.0
+    buildable: false
+  all:
+    target: [aarch64]
+    buildable: true
+    providers:
+      blas: [openblas]
+      lapack: [openblas]
+      mpi: [openmpi]

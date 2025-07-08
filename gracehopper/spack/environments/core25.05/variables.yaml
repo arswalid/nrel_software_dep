@@ -1,0 +1,12 @@
+# system gcc
+system_gcc:
+  version: 11.5.0
+# GCC
+gcc:
+  version: 14.2.0
+# LLVM
+llvm:
+  version: 19.1.0
+# OS
+os:
+  identifier: rocky9 

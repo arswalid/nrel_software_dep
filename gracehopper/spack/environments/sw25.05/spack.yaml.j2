@@ -1,0 +1,55 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+  - concretizer.yaml
+  - modules.yaml
+  - compilers.yaml
+  - config.yaml
+  - packages.yaml
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+  - gcc_compilers:
+    - '%gcc@{{ gcc.version }}'
+  - llvm_compilers:
+    - '%clang@{{ llvm.version }}'
+  - all_compilers:
+    - $gcc_compilers
+    - $llvm_compilers
+
+  - sw-25.05:
+i   - boost ~mpi
+    - boost +mpi
+    - openmpi
+    #- cudnn
+    #- openmpi +pmi +cuda~vt fabrics=ucx schedulers=slurm legacylaunchers=True cuda_arch=90
+    #- openblas      
+    #- netlib-lapack  
+    #- netlib-scalapack 
+    #- parmetis 
+    #- boost +mpi+atomic+container+context+contract+coroutine+date_time+fiber+filesystem+graph_parallel+iostreams+json+locale+log+math+multithreaded+nowide+numpy+program_options+python+random+regex+serialization+signals+stacktrace+timer+type_erasure+wave
+    #  cxxstd=17 
+    #- hypre ~cuda+gptune+openmp~rocm~superlu-dist   
+    #- netcdf-c 
+    #- netcdf-cxx4 
+    #- netcdf-fortran 
+  # -------------------------------------------------------------------
+  # Final Spec Matrices
+  # -------------------------------------------------------------------
+
+
+  - sw_cpu:
+    - matrix:
+      - - $sw-25.05
+      - - $all_compilers
+
+
+  specs:
+  - $sw_cpu
