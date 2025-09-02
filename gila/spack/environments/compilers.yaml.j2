@@ -1,0 +1,38 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+compilers:
+  # system GCC
+  - compiler:
+      spec: gcc@{{ system_gcc.version }}
+      paths:
+        cc:  /usr/bin/gcc
+        cxx: /usr/bin/g++
+        f77: /usr/bin/gfortran
+        fc:  /usr/bin/gfortran
+      operating_system: {{ os.identifier }}
+      modules: [ ]
+
+  # GCC compiler
+  - compiler:
+      spec: gcc@{{ gcc.version }}
+      paths:
+        cc: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/gcc'] | path_join }}
+        cxx: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/g++'] | path_join }}
+        f77: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/gfortran'] | path_join }}
+        fc: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/gfortran'] | path_join }}
+      operating_system: {{ os.identifier }}
+      modules:
+        - gcc/{{ gcc.version }}
+
+  # LLVM compiler
+{% set gcc_v_list = gcc.version.split(".") %}
+  - compiler:
+      spec: clang@{{ llvm.version }}-gfortran{{ gcc_v_list[0] }}
+      paths:
+        cc: {{ [NSP_install_root, 'llvm', llvm.version, 'bin/clang'] | path_join }}
+        cxx: {{ [NSP_install_root, 'llvm', llvm.version, 'bin/clang++'] | path_join }}
+        f77: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/gfortran'] | path_join }}
+        fc: {{ [NSP_install_root, 'gcc', gcc.version, 'bin/gfortran'] | path_join }}
+      operating_system: {{ os.identifier }}
+      modules:
+        - llvm/{{ llvm.version }}

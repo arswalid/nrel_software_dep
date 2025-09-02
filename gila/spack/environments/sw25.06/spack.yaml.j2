@@ -1,0 +1,98 @@
+##
+#| WARNING! This file is managed by Ansible.
+#| Do NOT make manual changes to this file.
+#| Please email walid.arsalane@nrel.gov to request a change.
+#
+#| Info:
+#|   Role: spack
+#|   NREL Template: spack/environments/sw25.06/spack.yaml.j2
+#|   User: warsalan
+##
+
+# OLCF gracehopper sw25.06 Spack Environment
+
+spack:
+  view: false
+  include:
+  - concretizer.yaml
+  - modules.yaml
+  - compilers.yaml
+  - config.yaml
+  - packages.yaml
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+  - gcc_compilers:
+    - '%gcc@14.2.0'
+  - llvm_compilers:
+    - '%clang@19.1.0'
+  - all_compilers:
+    - $gcc_compilers
+    - $llvm_compilers
+
+
+  - sw-25.06-nompi-nocuda:
+    - openbabel 
+    - ncview
+      #- ncl
+    - gsl 
+    - boost ~mpi
+    - openblas
+    - netlib-lapack
+    - netcdf-cxx4
+    - netcdf-fortran 
+    - openmpi ~cuda
+    - mpich
+    - parmetis 
+    - netlib-scalapack 
+    - petsc+batch ~mpi~cuda
+    - slepc ~cuda
+    - adios ~mpi
+    - fftw ~mpi
+    - hdf5 +hl+cxx+fortran ~mpi
+
+  - sw-25.06-nompi-cuda:
+    - cudnn
+    - openmpi +cuda cuda_arch=90
+
+  - sw-25.06-mpi-nocuda:
+    - boost +mpi  
+    - netcdf-c +mpi
+    - hdf5 +hl+cxx+fortran +mpi
+    - adios +mpi
+    - fftw +mpi
+    - hpgmg ~cuda
+    - openfast 
+
+  - sw-25.06-mpi-cuda:
+    #- petsc+batch +mpi+cuda cuda_arch=90
+    #- slepc +cuda cuda_arch=90
+    - hpgmg +cuda
+
+  - sw_nompi-nocuda:
+    - matrix:
+      - - $sw-25.06-nompi-nocuda
+      - - $all_compilers
+
+  - sw_nompi-nocuda:
+    - matrix:
+      - - $sw-25.06-nompi-cuda
+      - - $gcc_compilers
+
+  - sw_nompi-nocuda:
+    - matrix:
+      - - $sw-25.06-mpi-nocuda
+      - - $all_compilers
+  
+  - sw_mpi-cuda:
+    - matrix:
+      - - $sw-25.06-mpi-cuda
+      - - $gcc_compilers
+  specs:
+  - $sw-25.06-nompi-nocuda
+  - $sw-25.06-nompi-cuda
+  - $sw-25.06-mpi-nocuda
+  - $sw-25.06-mpi-cuda

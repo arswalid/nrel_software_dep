@@ -1,0 +1,81 @@
+- name: Deploy Gila
+  hosts: localhost
+
+  vars:
+    NSP_system_name: gila
+    NSP_install_root: "{{ ['/nopt/gila/apps', NSP_system_name] | path_join }}"
+    NSP_help_email: walid.arsalane@nrel.gov
+    NSP_site_name: NREL
+    NSP_scratch_directory: "{{ ['/scratch/', ansible_user_id] | path_join }}"
+
+  roles: 
+    - role: init
+    - role: lmod
+      vars:
+        NSP_LMOD_version: 8.7.53
+        NSP_LMOD_install_type: internal  
+        NSP_LMOD_default_modules:
+          - Core/25.05
+          - gcc/14.2.0
+        NSP_LMOD_hierarchy:
+          compiler:
+            members: [ gcc, llvm ]
+            paths:
+              - {path: '|compiler.name|-|compiler.version|', weight: 20}
+              - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
+              - { path: '|gpu.name|-|gpu.version|/|compiler.name|-|compiler.version|', weight: 40 }  
+            level: 0
+          mpi:
+            members: [ openmpi ]
+            paths:
+              - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
+            level: 1  
+          gpu:
+            members: [ cuda ]
+            paths:
+              - {path: '|gpu.name|-|gpu.version|/|compiler.name|-|compiler.version|', weight: 30}
+              - {path: '|mpi.name|-|mpi.version|/|gpu.name|-|gpu.version|/|compiler.name|-|compiler.version|', weight: 40}
+              - {path: '|gpu.name|-|gpu.version|/|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 40}
+            level: 2  
+    - role: init
+    - role: miniforge3
+      vars:
+        NSP_MINIFORGE3_version: 24.11.3
+    - role: cuda
+      vars:
+        NSP_CUDA_version: '12.9.0'
+        NSP_CUDA_driver: '575.51.03'      
+          #NSP_CUDA_arm: '_sbsa'
+    - role: gcc
+      vars:
+        NSP_GCC_version: 14.2.0
+          #- role: nvhpc
+          #  vars:
+          #    NSP_NVHPC_version: 25.5
+          #    NSP_NVHPC_arch: 'aarch64' 
+    - role: llvm
+      vars:
+        NSP_LLVM_version: 19.1.0
+        NSP_LLVM_targets:
+          - host  
+    - role: spack
+      vars:
+        _shared_templates: &shared_L
+          - compilers
+          - concretizer
+          - config
+          - modules
+          - packages
+        _specific_templates: &specific_L
+          - spack
+        NSP_SPACK_versions:
+          v0.23.1:
+            git_reference: 2bfcc69
+        NSP_SPACK_environments:
+          core25.05: { spack_version: v0.23.1, specific_templates: *specific_L, shared_templates: *shared_L }
+          sw25.06: { spack_version: v0.23.1, specific_templates: *specific_L, shared_templates: *shared_L }
+    - role: files
+      vars:
+        NSP_FILES_inventory:
+          - src: Core
+            dest: "{{ [NSP_module_root, 'Core'] | path_join }}"  

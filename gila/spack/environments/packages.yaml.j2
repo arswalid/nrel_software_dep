@@ -1,0 +1,15 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+packages:
+  cuda:
+    externals:
+      - spec: cuda@12.9.0
+        prefix: /nopt/gila/apps/gila/cuda/12.9.0
+    buildable: false
+  all:
+    target: [x86_64]
+    buildable: true
+    providers:
+      blas: [openblas]
+      lapack: [openblas]
+      mpi: [openmpi]
