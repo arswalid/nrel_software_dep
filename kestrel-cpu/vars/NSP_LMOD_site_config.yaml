@@ -1,0 +1,6 @@
+NSP_LMOD_site_config:
+  MODULEPATH:
+    - /opt/cray/pe/lmod/lmod/modulefiles/Core
+    - $MODULEPATH_ROOT/$LMOD_sys
+    - $MODULEPATH_ROOT/Core
+
