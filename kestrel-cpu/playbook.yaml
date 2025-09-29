@@ -1,0 +1,90 @@
+- name: Deploy Kestrel-cpu
+  hosts: localhost
+
+  vars:
+    NSP_system_name: kestrel
+    NSP_install_root: "{{ ['/nopt/nrel/apps/testing/warsalan/dep_stack', NSP_system_name] | path_join }}"
+    NSP_scratch_directory: "{{ ['/scratch', ansible_user_id] | path_join }}"
+    NSP_help_email: walid.arsalane@nrel.gov
+    NSP_site_name: NREL
+      
+
+  roles: 
+    - role: init
+    #- role: cpe 
+    - role: cuda
+      vars:
+        NSP_CUDA_version: '12.4.1'
+        NSP_CUDA_driver: '550.54.15'
+    - role: lmod
+      vars:
+        #NSP_LMOD_site_config:
+        #  MODULEPATH:
+        #    - /opt/cray/pe/lmod/lmod/modulefiles/Core
+        #    - $MODULEPATH_ROOT/$LMOD_sys
+        #    - $MODULEPATH_ROOT/Core
+        #  env:
+        #    MODULEPATH_ROOT: /opt/cray/pe/modulefiles
+        #    LMOD_sys: uname
+        NSP_LMOD_install_type: external 
+        #NSP_LMOD_version: 8.7.37
+        NSP_LMOD_path_names:
+          /opt/cray/pe: "[ Cray Programming Environment ]"
+    # %s substitutes in the value from the system module
+        NSP_LMOD_default_module_paths:
+          - /nopt/nrel/apps/testing/warsalan/modules
+        #  - /nopt/nrel/apps/cpu_stack/modules/default/compilers_mpi/
+        #  - /nopt/nrel/apps/cpu_stack/modules/default/utilities_libraries
+        #  - /nopt/nrel/apps/cpu_stack/modules/default/application/
+        NSP_LMOD_nv_mappings:
+          clang/12.3.0: {name: 'llvm', version: '%s'}
+        NSP_LMOD_default_modules:
+          - Core/25.06
+          - gcc/14.2.0
+        NSP_LMOD_hierarchy:
+          compiler:
+            members: [ gcc, oneapi, llvm ]
+            paths:
+              - {path: '|compiler.name|-|compiler.version|', weight: 20}
+              - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
+            level: 0
+          mpi:
+            members: [ openmpi ]
+            paths:
+              - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
+            level: 1  
+    - role: miniforge3
+      vars:
+        NSP_MINIFORGE3_version: 24.11.3
+    - role: llvm
+      vars:
+        NSP_LLVM_version: 19.1.0
+    - role: gcc
+      vars:
+        NSP_GCC_version: 14.2.0
+    - role: oneapi
+      vars:
+        NSP_ONEAPI_hpc_toolkit_url: ' https://registrationcenter-download.intel.com/akdlm/IRC_NAS/0ed71121-bd80-4ba7-ab54-805138bf06a7/intel-oneapi-hpc-toolkit-2025.1.3.10_offline.sh'
+        NSP_ONEAPI_base_toolkit_url: 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/4a5320d1-0b48-458d-9668-fd0e4501208c/intel-oneapi-base-toolkit-2025.1.3.7_offline.sh'
+        NSP_ONEAPI_version: 2025.1.3
+    - role: spack
+      vars:
+        _shared_templates: &shared_L
+          - compilers
+          - concretizer
+          - config
+          - modules
+          - packages
+        _specific_templates: &specific_L
+          - spack
+        NSP_SPACK_versions:
+          v0.23.1:
+            git_reference: 2bfcc69
+        NSP_SPACK_environments:
+          core25.06: { spack_version: v0.23.1, specific_templates: *specific_L, shared_templates: *shared_L }
+          sw25.06: { spack_version: v0.23.1, specific_templates: *specific_L, shared_templates: *shared_L }
+    - role: files
+      vars:
+        NSP_FILES_inventory:
+          - src: Core
+            dest: "{{ [NSP_module_root, 'Core'] | path_join }}"
