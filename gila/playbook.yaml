@@ -7,6 +7,7 @@
     NSP_help_email: walid.arsalane@nrel.gov
     NSP_site_name: NREL
     NSP_scratch_directory: "{{ ['/scratch/', ansible_user_id] | path_join }}"
+    NSP_max_threads: 1  
 
   roles: 
     - role: init
@@ -19,14 +20,14 @@
           - gcc/14.2.0
         NSP_LMOD_hierarchy:
           compiler:
-            members: [ gcc, llvm ]
+            members: [ gcc, oneapi, llvm ]
             paths:
               - {path: '|compiler.name|-|compiler.version|', weight: 20}
               - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
               - { path: '|gpu.name|-|gpu.version|/|compiler.name|-|compiler.version|', weight: 40 }  
             level: 0
           mpi:
-            members: [ openmpi ]
+            members: [ openmpi, intel-oneapi-mpi ]
             paths:
               - {path: '|mpi.name|-|mpi.version|/|compiler.name|-|compiler.version|', weight: 30}
             level: 1  
@@ -49,15 +50,20 @@
     - role: gcc
       vars:
         NSP_GCC_version: 14.2.0
+    - role: oneapi
+      vars:
+        NSP_ONEAPI_hpc_toolkit_url: ' https://registrationcenter-download.intel.com/akdlm/IRC_NAS/0ed71121-bd80-4ba7-ab54-805138bf06a7/intel-oneapi-hpc-toolkit-2025.1.3.10_offline.sh'
+        NSP_ONEAPI_base_toolkit_url: 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/4a5320d1-0b48-458d-9668-fd0e4501208c/intel-oneapi-base-toolkit-2025.1.3.7_offline.sh'
+        NSP_ONEAPI_version: 2025.1.3     
           #- role: nvhpc
           #  vars:
           #    NSP_NVHPC_version: 25.5
           #    NSP_NVHPC_arch: 'aarch64' 
-    - role: llvm
-      vars:
-        NSP_LLVM_version: 19.1.0
-        NSP_LLVM_targets:
-          - host  
+          #- role: llvm
+          #  vars:
+          #    NSP_LLVM_version: 19.1.0
+          #    NSP_LLVM_targets:
+          #      - host  
     - role: spack
       vars:
         _shared_templates: &shared_L
@@ -79,3 +85,5 @@
         NSP_FILES_inventory:
           - src: Core
             dest: "{{ [NSP_module_root, 'Core'] | path_join }}"  
+          - src: Application
+            dest: "{{ [NSP_module_root, 'application'] | path_join }}"  

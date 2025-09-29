@@ -29,9 +29,11 @@ spack:
     - '%gcc@14.2.0'
   - llvm_compilers:
     - '%clang@19.1.0'
+  - oneapi_compilers:
+    - '%oneapi@{{ oneapi.version }}'
   - all_compilers:
     - $gcc_compilers
-    - $llvm_compilers
+    - $oneapi_compilers
 
 
   - sw-25.06-nompi-nocuda:
@@ -72,17 +74,39 @@ spack:
     #- slepc +cuda cuda_arch=90
     - hpgmg +cuda
 
+  - sw-25.06-intelmpi:
+    - boost +mpi ^intel-oneapi-mpi
+    - netcdf-c +mpi ^intel-oneapi-mpi
+    - hdf5 +hl+cxx+fortran +mpi ^intel-oneapi-mpi
+    - adios +mpi ^intel-oneapi-mpi
+    - fftw +mpi ^intel-oneapi-mpi
+    - hpgmg ~cuda ^intel-oneapi-mpi
+    - openfast ^intel-oneapi-mpi
+    - intel-oneapi-mkl@2024.0.0 
+    - intel-oneapi-mkl@2023.2.0 
+    - intel-oneapi-dnn@2024.0.0 
+    - intel-oneapi-dnn@2023.2.0 
+    - intel-oneapi-dal@2024.0.0 
+    - intel-oneapi-dal@2023.2.0 
+    - intel-oneapi-dpl@2022.3.0 
+    - intel-oneapi-dpl@2022.2.0 
+    - intel-oneapi-ipp@2021.10.0
+    - intel-oneapi-ipp@2021.9.0  
+    - intel-oneapi-ippcp@2021.8.0
+    - intel-oneapi-ippcp@2021.9.0
+    - intel-oneapi-tbb@2021.10.0 
+
   - sw_nompi-nocuda:
     - matrix:
       - - $sw-25.06-nompi-nocuda
       - - $all_compilers
 
-  - sw_nompi-nocuda:
+  - sw_nompi-cuda:
     - matrix:
       - - $sw-25.06-nompi-cuda
       - - $gcc_compilers
 
-  - sw_nompi-nocuda:
+  - sw_mpi-nocuda:
     - matrix:
       - - $sw-25.06-mpi-nocuda
       - - $all_compilers
@@ -91,8 +115,14 @@ spack:
     - matrix:
       - - $sw-25.06-mpi-cuda
       - - $gcc_compilers
+
+  - sw_intempi:
+    - matrix:
+      - - $sw-25.06-intelmpi
+      - - $oneapi_compilers
   specs:
   - $sw-25.06-nompi-nocuda
   - $sw-25.06-nompi-cuda
   - $sw-25.06-mpi-nocuda
   - $sw-25.06-mpi-cuda
+  - $sw_intempi
