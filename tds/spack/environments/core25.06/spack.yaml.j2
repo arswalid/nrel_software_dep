@@ -1,0 +1,39 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+    - concretizer.yaml
+    - modules.yaml
+    - compilers.yaml
+    - config.yaml
+    - packages.yaml
+
+  modules:
+    default:
+      lmod:
+        core_compilers: [ gcc@{{ system_gcc.version }} ]
+        projections:
+          # core
+          '%gcc@{{ system_gcc.version }}': '25.06/{name}/{version}'
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+    - core_compiler:
+      - '%gcc@{{ system_gcc.version }}'
+
+    - core_25.06:
+      - matrix:
+        - - cmake
+          - tmux
+          - wget
+          - python
+        - - $core_compiler
+
+  specs:
+    - $core_25.06

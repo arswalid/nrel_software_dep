@@ -1,0 +1,46 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+packages:
+  cuda:
+    require: '+allow-unsupported-compilers' 
+    externals:
+      - spec: cuda@12.4.1
+        prefix: /nopt/nrel/apps/testing/dep_stack/kestrel/cuda/12.4.1 
+    buildable: false
+  hwloc:
+    require: '%gcc ^openmpi'
+  intel-oneapi-mpi:
+    require: '%oneapi'
+  boost:
+    require: 'cxxflags="-pthread" ldflags="-pthread"'
+  gtkplus:
+    require: '@3.24.41'
+  #hdf5:
+  #  require: '%gcc'
+  python:
+    require: '%gcc'
+  openbabel:
+    require: '%gcc'
+  #openbabel:
+  #  require: 'cmake_args="-DENABLE_IPO=OFF"'
+  #openblas:
+  #  run_tests: false
+  cray-mpich:
+    require: "@8.1.28 %gcc"
+    buildable: false
+    externals:
+      #- spec: "cray-mpich@8.1.28%oneapi"
+      #  prefix: /opt/cray/pe/mpich/8.1.28/ofi/intel/2022.1
+      #  modules:
+      #    - libfabric/1.15.2.0
+      - spec: "cray-mpich@8.1.28%gcc"
+        prefix: /opt/cray/pe/mpich/8.1.28/ofi/gnu/10.3
+        modules:
+          - cpe-stack/25.12
+          - PrgEnv-gnu
+  all:
+    buildable: true
+    providers:
+      blas: [openblas]
+      lapack: [openblas]
+      mpi: [openmpi,intel-oneapi-mpi,cray-mpich]
