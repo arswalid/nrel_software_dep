@@ -1,0 +1,15 @@
+ #!/usr/bin/env bash
+ ##
+ #| WARNING! This file is managed by Ansible.
+ #| Do NOT make manual changes to this file.
+ #| Please email example@example.com to request a change.
+ #
+ #| Info:
+ #|   Role: init
+ #|   Template: profile.j2
+ #|   User: software
+ ##
+
+ # BEGIN INIT MANAGED
+ echo "Welcome to Kestrel"
+ # END INIT MANAGED
