@@ -7,10 +7,24 @@ packages:
       - spec: cuda@12.4.1
         prefix: /nopt/nrel/apps/testing/dep_stack/kestrel/cuda/12.4.1 
     buildable: false
+  slurm:
+    buildable: false
+    externals:
+      - spec: slurm@25-05-5
+        prefix: /nopt/slurm/current 
+  libfabric:
+    buildable: false
+    externals:
+      - spec: libfabric@1.22.0
+        prefix: /opt/cray/libfabric/1.22.0 
+  openmpi: 
+    require: schedulers=slurm fabrics=ofi 
+  mpich: 
+    require: +slurm 
   hwloc:
     require: '%gcc ^openmpi'
   intel-oneapi-mpi:
-    require: '%oneapi'
+    require: '+external-libfabric%oneapi'
   boost:
     require: 'cxxflags="-pthread" ldflags="-pthread"'
   gtkplus:
@@ -26,18 +40,15 @@ packages:
   #openblas:
   #  run_tests: false
   cray-mpich:
-    require: "@8.1.28 %gcc"
+    require: "@8.1.32 %gcc"
     buildable: false
     externals:
-      #- spec: "cray-mpich@8.1.28%oneapi"
-      #  prefix: /opt/cray/pe/mpich/8.1.28/ofi/intel/2022.1
-      #  modules:
-      #    - libfabric/1.15.2.0
-      - spec: "cray-mpich@8.1.28%gcc"
-        prefix: /opt/cray/pe/mpich/8.1.28/ofi/gnu/10.3
+      - spec: "cray-mpich@8.1.32%gcc"
+        prefix: /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2
         modules:
-          - cpe-stack/25.12
+          - cpe-stack
           - PrgEnv-gnu
+          - libfabric
   all:
     buildable: true
     providers:
