@@ -49,7 +49,7 @@ modules:
       hash_length: 0
       hierarchy:: [ ]
       projections:
-        ^llvm-amdgpu ^mpi: "{^mpi.name}-{^mpi.version}/rocm-{^llvm-amdgpu.version}/{compiler.name}-{compiler.version}/{name}/{version}"
+	^llvm-amdgpu ^mpi: "{^mpi.name}-{^mpi.version}/rocm-{^llvm-amdgpu.version}/{compiler.name}-{compiler.version}/{name}/{version}"
         ^cuda ^mpi: "{^mpi.name}-{^mpi.version}/cuda-{^cuda.version}/{compiler.name}-{compiler.version}/{name}/{version}"
         ^llvm-amdgpu: "rocm-{^llvm-amdgpu.version}/{compiler.name}-{compiler.version}/{name}/{version}"
         ^cuda: "cuda-{^cuda.version}/{compiler.name}-{compiler.version}/{name}/{version}"
