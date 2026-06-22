@@ -1,0 +1,188 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+    - concretizer.yaml
+    - modules.yaml
+    - config.yaml
+    - packages.yaml
+
+  modules:
+    default:
+      lmod:
+        core_compilers: [ gcc@{{ system_gcc.version }} ]
+        projections:
+          # core
+          '%gcc@{{ system_gcc.version }}': '26.05/{name}/{version}'
+          '%gcc@{{ gcc.version }}': '26.05/{name}/{version}'
+
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+    - core_compiler:
+      - '%gcc@{{ system_gcc.version }}'
+    - newer_compiler:
+      - '%gcc@{{ gcc.version }}'
+
+
+# core software definition
+      
+    - core-26.05:
+      - binutils+gas+ld
+
+      - bc
+      #- bc@1.07.1
+
+      - bison
+      #- bison@3.8.2
+
+      - bzip2
+      #- bzip2@1.0.8
+
+      - cmake
+      #- cmake@3.27.9
+      #- cmake@3.29.2
+
+
+      - cppcheck
+      #- cppcheck@2.9 version not available anymore
+
+      - curl
+      #- curl@8.6.0 version deprecated
+      #- curl@8.7.1
+
+      - emacs
+      #- emacs@29.2
+      #- emacs@29.3
+
+      - ffmpeg
+      #- ffmpeg@6.1.1
+
+      - flex
+      #- flex@2.6.3
+      #- flex@2.6.4
+
+      - gdb
+      #- gdb@12.1
+
+      - gettext
+      #- gettext@0.22.5
+
+      - ghostscript
+      #- ghostscript@10.0.0
+
+      - git
+      #- git@2.45.1
+      #- git@2.48.1
+
+      # - git-lfs can concretize with gcc
+      #- git-lfs@3.3.0
+
+      - glib
+      #- glib@2.78.3
+
+      - gmake
+      #- gmake@4.4.1
+
+      - gnuplot
+      #- gnuplot@6.0.0
+
+      - gnutls
+      #- gnutls@3.7.8
+
+      - htop
+      #- htop@3.2.2
+
+      - hwloc
+      #- hwloc@2.9.1
+
+      - imagemagick
+      #- imagemagick@7.1.1-11
+
+      - jasper
+      #- jasper@1.900.1
+
+      - libnsl
+      #- libnsl@2.0.0
+
+      - libpng
+      #- libpng@1.5.30
+      #- libpng@1.6.39
+
+      - libxml2
+      #- libxml2@2.10.3
+
+      - makedepend
+      #- makedepend@1.0.8
+
+      - mercurial
+      #- mercurial@6.4.5
+
+      - ninja
+      #- ninja@1.11.1
+
+      - node-js
+      #- node-js@18.12.1
+
+      - npm
+      #- npm@9.3.1
+
+      - patch
+      #- patch@2.7.6
+
+      #- pixi not in spack 
+      #- pixi@0.64.0
+      #- pixi@0.65.0
+
+      - pkg-config
+      #- pkg-config@0.29.2
+
+      - python +tkinter
+      - python@3.10 +tkinter
+      - python@3.11 +tkinter
+      - python@3.12 +tkinter
+      - python@3.13 +tkinter 
+
+      #- stow cant have compiler with it
+      #- stow@2.3.1
+
+      - tar
+      #- tar@1.34
+
+      - texinfo
+      #- texinfo@7.0.3
+
+      - texlive
+      #- texlive@20220321
+
+      - tmux
+      #- tmux@3.3a
+
+      - yaml-cpp
+      #- yaml-cpp@0.5.3
+      #- yaml-cpp@0.8.0
+
+      #- zmq not in spack 
+      #- zmq@4.3.5
+
+      - zsh
+      #- zsh@5.8.1
+
+  # -------------------------------------------------------------------
+  # Final Spec Matrix
+  # -------------------------------------------------------------------
+    - core_matrix:
+      - matrix:
+        - - $core-26.05
+        - - $core_compiler
+
+  specs:
+    - $core_matrix
+    - stow 
+    - git-lfs

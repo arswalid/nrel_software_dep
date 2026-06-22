@@ -1,0 +1,13 @@
+wget https://prdownloads.sourceforge.net/tcl/tcl8.6.14-src.tar.gz
+tar -xzf tcl8.6.14-src.tar.gz
+cd tcl8.6.14/unix
+
+
+./configure --prefix=$HOME/tcl
+make -j
+make install
+
+
+export PATH=$HOME/tcl/bin:$PATH
+export CPATH=$HOME/tcl/include:$CPATH
+export LIBRARY_PATH=$HOME/tcl/lib:$LIBRARY_PATH

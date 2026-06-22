@@ -1,0 +1,166 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+  - concretizer.yaml
+  - modules.yaml
+  - compilers.yaml
+  - config.yaml
+  - packages.yaml
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+  - gcc_compilers:
+    - '%gcc@{{ gcc.version }}'
+  - llvm_compilers:
+    - '%clang@{{ llvm.version }}'
+  - oneapi_compilers:
+    - '%oneapi@{{ oneapi.version }}'
+  - cpe-gnu_compilers:
+    - '%gcc@=13.2.1'
+  - all_compilers:
+    - $gcc_compilers
+    - $llvm_compilers
+    - $oneapi_compilers
+
+  - sw-25.12-nompi-nocuda_gcc:
+    #- openbabel
+    - ncview
+      #- ncl
+    - gsl
+    #- boost ~mpi
+    - openblas
+    - netlib-lapack
+    #- netcdf-cxx4
+    #- netcdf-fortran
+    #- openmpi ~cuda
+    #- mpich
+    - parmetis
+    - netlib-scalapack
+    - petsc+batch ~mpi~cuda
+    - slepc ~cuda
+    - adios ~mpi
+    #- fftw ~mpi
+    - hdf5 +hl+cxx+fortran ~mpi
+
+  - sw-25.12-nompi-nocuda_allcomp:
+    #- openbabel
+    #- ncview
+      #- ncl
+    #- gsl
+    - boost ~mpi
+    #- openblas
+    #- netlib-lapack
+    - netcdf-cxx4
+    - netcdf-fortran
+    - openmpi ~cuda
+    - mpich
+    #- parmetis
+    #- netlib-scalapack
+    #- petsc+batch ~mpi~cuda
+    #- slepc ~cuda
+    #- adios ~mpi
+    - fftw ~mpi
+    #- hdf5 +hl+cxx+fortran ~mpi
+
+  - sw-25.12-nompi-cuda:
+    - cudnn
+    - openmpi +cuda #cuda_arch=90
+
+  - sw-25.12-mpi-nocuda:
+    - boost +mpi
+    - netcdf-c +mpi
+    #- hdf5 +hl+cxx+fortran +mpi
+    - adios +mpi
+    - fftw +mpi
+    - hpgmg ~cuda
+    - openfast
+
+  - sw-25.12-mpi-cuda:
+    #- petsc+batch +mpi+cuda cuda_arch=90
+    #- slepc +cuda cuda_arch=90
+    - hpgmg +cuda
+
+  - sw-25.12-intelmpi:
+    - boost +mpi ^intel-oneapi-mpi
+    - netcdf-c +mpi ^intel-oneapi-mpi
+    - hdf5 +hl+cxx+fortran +mpi ^intel-oneapi-mpi
+    - adios +mpi ^intel-oneapi-mpi
+    - fftw +mpi ^intel-oneapi-mpi
+    - hpgmg ~cuda ^intel-oneapi-mpi
+    - openfast ^intel-oneapi-mpi
+    - intel-oneapi-mkl@2024.0.0
+    - intel-oneapi-mkl@2023.2.0
+    - intel-oneapi-dnn@2024.0.0
+    - intel-oneapi-dnn@2023.2.0
+    - intel-oneapi-dal@2024.0.0
+    - intel-oneapi-dal@2023.2.0
+    - intel-oneapi-dpl@2022.3.0
+    - intel-oneapi-dpl@2022.2.0
+    - intel-oneapi-ipp@2021.10.0
+    - intel-oneapi-ipp@2021.9.0
+    - intel-oneapi-ippcp@2021.8.0
+    - intel-oneapi-ippcp@2021.9.0
+    - intel-oneapi-tbb@2021.10.0
+    - intel-oneapi-mpi
+
+  - sw-25.12-cray-mpich:
+    - boost +mpi ^cray-mpich
+    - netcdf-c +mpi ^cray-mpich
+    - hdf5 +hl+cxx+fortran +mpi ^cray-mpich
+    - adios +mpi ^cray-mpich
+    - fftw +mpi ^cray-mpich
+    - hpgmg ~cuda ^cray-mpich
+    - openfast ^cray-mpich
+
+  # -------------------------------------------------------------------
+  # Final Spec Matrices
+  # -------------------------------------------------------------------
+
+  - sw_nompi-nocuda_gcc:
+    - matrix:
+      - - $sw-25.12-nompi-nocuda_gcc
+      - - $gcc_compilers
+
+  - sw_nompi-nocuda_allcomp:
+    - matrix:
+      - - $sw-25.12-nompi-nocuda_allcomp
+      - - $all_compilers
+  - sw_nompi-cuda:
+    - matrix:
+      - - $sw-25.12-nompi-cuda
+      - - $gcc_compilers
+
+  - sw_mpi-nocuda:
+    - matrix:
+      - - $sw-25.12-mpi-nocuda
+      - - $gcc_compilers
+
+  - sw_mpi-cuda:
+    - matrix:
+      - - $sw-25.12-mpi-cuda
+      - - $gcc_compilers
+
+  - sw_intempi:
+    - matrix:
+      - - $sw-25.12-intelmpi
+      - - $oneapi_compilers
+
+  - sw_craympich:
+    - matrix:
+      - - $sw-25.12-cray-mpich
+      - - $cpe-gnu_compilers
+  specs:
+  - $sw_nompi-nocuda_gcc
+  - $sw_nompi-nocuda_allcomp
+  - $sw_nompi-cuda
+  - $sw_mpi-nocuda
+  - $sw_mpi-cuda
+  - $sw_intempi
+  - $sw_craympich

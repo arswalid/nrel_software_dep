@@ -1,0 +1,45 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+  - concretizer.yaml
+  - modules.yaml
+  - compilers.yaml
+  - config.yaml
+  - packages.yaml
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+  - gcc_compilers:
+    - '%gcc@{{ gcc.version }}'
+  - llvm_compilers:
+    - '%clang@{{ llvm.version }}'
+  - oneapi_compilers:
+    - '%oneapi@{{ oneapi.version }}'
+  - all_compilers:
+    - $gcc_compilers
+    - $llvm_compilers
+    - $oneapi_compilers
+
+  - sw-25.06:
+    - boost ~mpi
+    - boost +mpi
+    - openmpi
+
+  # -------------------------------------------------------------------
+  # Final Spec Matrices
+  # -------------------------------------------------------------------
+
+  - sw_cpu:
+    - matrix:
+      - - $sw-25.06
+      - - $all_compilers
+
+  specs:
+  - $sw_cpu

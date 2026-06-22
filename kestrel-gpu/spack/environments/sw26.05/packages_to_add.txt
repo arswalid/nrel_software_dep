@@ -1,0 +1,115 @@
+spack:
+  specs:
+  - adios@1.13.1%intel ^cray-mpich
+  - adios@1.13.1%intel ^intel-oneapi-mpi
+  - adios@1.13.1%gcc ^openmpi
+
+  - arm-forge@22.0.4
+
+  - boost@1.84.0%intel ^cray-mpich
+  - boost@1.84.0%intel ^intel-oneapi-mpi
+  - boost@1.85.0%gcc ^openmpi
+
+  - cuda@12.1
+  - cuda@12.2
+  - cuda@12.3
+  - cuda@12.4
+  - cuda@12.5
+  - cuda@12.8
+  - cuda@12.9
+  - cuda@13.2
+
+  - darshan-runtime@3.4.5
+  - darshan-util@3.4.5
+
+  - fftw@3.3.10%intel ^cray-mpich
+  - fftw@3.3.10%intel ^intel-oneapi-mpi
+  - fftw@3.3.10%gcc ^openmpi
+
+  - gsl@2.7.1%gcc
+
+  - hdf5@1.14.1.2%intel ^cray-mpich
+  - hdf5@1.14.1.2%intel ^intel-oneapi-mpi
+  - hdf5@1.14.1.2%gcc ^openmpi
+  - hdf5@1.14.3%intel ^cray-mpich
+  - hdf5@1.14.3%intel ^intel-oneapi-mpi
+  - hdf5@1.14.3%gcc ^openmpi
+  - hdf5@1.14.6%gcc ^cray-mpich
+  - hdf5@4.9.2%intel ^intel-oneapi-mpi
+
+  - hpctoolkit@2024.01.1
+
+  - hpgmg@0.4%gcc
+  - hpgmg@0.4%intel
+
+  - hypre@2.25.0%intel ^cray-mpich
+  - hypre@2.25.0%intel ^intel-oneapi-mpi
+  - hypre@2.25.0%gcc ^openmpi
+
+  - intel-oneapi-advisor@2024.1.0
+  - intel-oneapi-dal@2023.2.0
+  - intel-oneapi-dal@2024.0.0
+  - intel-oneapi-dnn@2023.2.0
+  - intel-oneapi-dnn@2024.0.0
+  - intel-oneapi-dpl@2022.2.0
+  - intel-oneapi-dpl@2022.3.0
+  - intel-oneapi-inspector@2024.1.0
+  - intel-oneapi-ipp@2021.9.0
+  - intel-oneapi-ipp@2021.10.0
+  - intel-oneapi-ippcp@2021.8.0
+  - intel-oneapi-ippcp@2021.9.0
+  - intel-oneapi-mkl@2023.2.0
+  - intel-oneapi-mkl@2024.0.0
+  - intel-oneapi-mkl@2025.0.0
+  - intel-oneapi-runtime@2024.1.0
+  - intel-oneapi-tbb@2021.10.0
+  - intel-oneapi-trace@2022.4
+  - intel-oneapi-trace@latest
+  - intel-oneapi-vtune@2024.1.0
+
+  - netlib-lapack@3.11.0
+  - netlib-scalapack@2.2.0%gcc
+
+  - netcdf-c@4.9.2%intel ^cray-mpich
+  - netcdf-c@4.9.2%intel ^intel-oneapi-mpi
+  - netcdf-c@4.9.2%gcc ^openmpi
+  - netcdf-c@4.9.3%gcc ^cray-mpich
+
+  - netcdf-cxx4@4.3.1%gcc
+  - netcdf-cxx4@4.3.1%intel
+
+  - netcdf-fortran@4.6.1%gcc ^cray-mpich
+  - netcdf-fortran@4.6.1%gcc
+  - netcdf-fortran@4.6.1%intel
+
+  - netcdf@4.9.2%intel ^intel-oneapi-mpi
+  - netcdf@4.9.2
+  - netcdf@4.9.3%gcc ^cray-mpich
+
+  - nccmp@1.9.1.0%gcc
+  - ncl@6.6.2
+  - ncview@2.1.9%gcc
+
+  - openbabel@3.1.1%gcc
+  - openblas@0.3.26%gcc
+  - openfast@3.4.1%gcc
+
+  - parmetis@4.0.3%gcc
+  - parmetis@4.0.3%intel
+
+  - petsc@3.20.4%intel ^intel-oneapi-mpi
+  - petsc@3.21.1%gcc ^openmpi
+
+  - pnetcdf@1.12.2
+  - pnetcdf@1.12.2%intel
+  - pnetcdf@1.14.0%gcc ^cray-mpich
+
+  - slepc@3.20.1%intel
+  - slepc@3.21.0%gcc
+
+  - superlu-dist@8.2.1%gcc
+  - superlu-dist@8.2.1%intel
+
+  - xerces-c@3.2.5%gcc
+
+  - zlib@1.3.1%gcc ^cray-mpich

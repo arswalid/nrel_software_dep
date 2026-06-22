@@ -1,0 +1,412 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+packages:
+  all:
+    target: [zen3]
+    buildable: true
+    providers:
+      blas: [openblas]
+      cblas: [openblas]
+      clapack: [openblas]
+      lapack: [openblas]
+      tbb: [intel-tbb]
+      dsmml: [cray-dsmml]
+      dyninst: [cray-dyninst]
+      fftw-api: [cray-fftw]
+      iconv: [glibc]
+      hdf5: [cray-hdf5-parallel, cray-hdf5]
+      mpi: [cray-mpich]  
+      parallel-netcdf: [cray-parallel-netcdf]
+
+### Customize packages --------------------------------------------------------------------------------
+  
+  binutils:
+    require:
+    - spec: "ldflags=-Wl,--undefined-version"
+      when: "%cce"
+
+  blaspp:
+    require:
+    - "^openblas threads=pthreads symbol_suffix=none"
+
+  boost:
+    require:
+    - spec: "cxxflags=-Wno-enum-constexpr-conversion"
+      when: "%cce"
+    - spec: "cxxflags=-Wno-enum-constexpr-conversion"
+      when: "%rocmcc"
+
+  butterflypack:
+    require:
+    - "%gcc"
+  
+  dyninst:
+    buildable: true
+  
+  intel-oneapi-tbb:
+    buildable: false
+
+  intel-parallel-studio:
+    buildable: false
+
+  intel-tbb:
+    buildable: true
+    variants: [cxxstd=11]
+    version: [2019.9, 2018.6]
+    require: "cxxflags=-std=c++11"
+  
+  launchmon:
+    require:
+    - spec: "cxxflags=-std=c++11"
+
+  libxcrypt:
+    require:
+    - spec: "ldflags=-Wl,--undefined-version"
+      when: "%cce"
+  
+  libxml2:
+    require:
+    - spec: "ldflags=-Wl,--undefined-version"
+      when: "%cce"
+
+  mrnet:
+    require:
+    - spec: "cxxflags=-std=c++11"
+      when: "%rocmcc"
+    
+  ncurses:
+    require:
+    - spec: "ldflags=-Wl,--undefined-version"
+      when: "%cce"
+
+  openblas:
+    require:
+    - "%gcc"
+  
+  papi:
+    require:
+    - spec: "%gcc"
+      when: "@7.0:"
+
+  parallel-netcdf:
+    require:
+    - spec: "^cray-mpich@{{ cray_mpich.version }}%cce"
+      when: "%cce"
+
+  paraview:
+    require: "^[virtuals=gl] osmesa"
+
+  parsec:
+    require:
+    - spec: "fflags=-ldl"
+      when: "%rocmcc"
+
+  petsc:
+    require:
+    - spec: "^superlu-dist +rocm amdgpu_target=gfx90a"
+      when: "+rocm"
+
+  pdt:
+    require:
+    - any_of: ["%gcc", "%cce"]
+
+  trilinos:
+    require:
+    - spec: "^superlu-dist +rocm amdgpu_target=gfx90a"
+      when: "+rocm"
+      
+  unzip:
+    require:
+    - any_of: ["%gcc", "%rocmcc"]
+      when: "@6.0"
+
+  ### Cray packages --------------------------------------------------------------------------------
+
+  cray-dyninst:
+    buildable: false
+    externals:
+    - spec: cray-dyninst@{{ cray_dyninst }}
+      modules:
+      - cray-dyninst/{{ cray_dyninst }}
+  
+  cray-fftw:
+    buildable: false
+    externals:
+    - spec: cray-fftw@{{ cray_fftw }}
+      modules:
+      - cray-fftw/{{ cray_fftw }}
+  
+  cray-hdf5:
+    buildable: false
+    externals:
+    - spec: cray-hdf5@{{ cray_hdf5 }}
+      modules:
+      - cray-hdf5/{{ cray_hdf5 }}
+  
+  cray-hdf5-parallel:
+    buildable: false
+    externals:
+    - spec: cray-hdf5-parallel@{{ cray_hdf5_parallel }}
+      modules:
+      - cray-hdf5-parallel/{{ cray_hdf5_parallel }}
+  
+  cray-mrnet:
+    buildable: false
+    externals:
+    - spec: cray-mrnet@{{ cray_mrnet }}
+      modules:
+      - cray-mrnet/{{ cray_mrnet }}
+  
+  cray-libsci:
+    buildable: false
+    externals:
+    - spec: cray-libsci@{{ cray_libsci.version }} %gcc
+      prefix: {{ cray_libsci.prefix.gnu }}
+    - spec: cray-libsci@{{ cray_libsci.version }} %rocmcc
+      prefix: {{ cray_libsci.prefix.amd }}
+    - spec: cray-libsci@{{ cray_libsci.version }} %cce
+      prefix: {{ cray_libsci.prefix.cray }}
+
+  cray-mpich:
+    buildable: false
+    externals:
+    - spec: cray-mpich@{{ cray_mpich.version }} %gcc
+      prefix: {{ cray_mpich.prefix.gnu }}
+    - spec: cray-mpich@{{ cray_mpich.version }} %rocmcc
+      prefix: {{ cray_mpich.prefix.amd }}
+    - spec: cray-mpich@{{ cray_mpich.version }} %cce
+      prefix: {{ cray_mpich.prefix.cray }}
+
+  cray-pmi:
+    buildable: false
+    externals:
+    - spec: cray-pmi@{{ cray_pmi }}
+      modules:
+      - cray-pmi/{{ cray_pmi }}
+  
+  libfabric:
+    buildable: true
+    externals:
+    - spec: libfabric@{{ libfabric }}
+      modules:
+      - libfabric/{{ libfabric }}
+
+### HIP/ROCm packages --------------------------------------------------------------------------------
+
+  hip:
+    buildable: false
+    externals:
+    - spec: hip@{{ hip.version }}
+      prefix: {{ hip.prefix }}
+      extra_attributes:
+        compilers:
+          hip: {{ hip.prefix }}/bin/hipcc --verbose
+        modules:
+        - rocm/{{ hip.version }}
+  
+  hipblas:
+    buildable: false
+    externals:
+    - spec: hipblas@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  hipcub:
+    buildable: false
+    externals:
+    - spec: hipcub@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  hipfft:
+    buildable: false
+    externals:
+    - spec: hipfft@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  hiprand:
+    buildable: false
+    externals:
+    - spec: hiprand@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+  
+  hipsolver:
+    buildable: false
+    externals:
+    - spec: hipsolver@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+  
+  hipsparse:
+    buildable: false
+    externals:
+    - spec: hipsparse@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+  
+  hsa-rocr-dev:
+    buildable: false
+    externals:
+    - spec: hsa-rocr-dev@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  hsakmt-roct:
+    buildable: false
+    externals:
+    - spec: hsakmt-roct@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  llvm-amdgpu:
+    buildable: false
+    externals:
+    - spec: llvm-amdgpu@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}/llvm
+      modules:
+      - rocm/{{ rocm.version }}
+
+  miopen-hip:
+    buildable: false
+    externals:
+    - spec: miopen-hip@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  rocm-opencl:
+    buildable: false
+    externals:
+    - spec: rocm-opencl@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  hip-rocclr:
+    buildable: false
+    externals:
+    - spec: hip-rocclr@{{ rocm.version }}
+      prefix: {{ hip.prefix }}
+
+  rccl:
+    buildable: false
+    externals:
+    - spec: rccl@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  rocalution:
+    buildable: false
+    externals:
+    - spec: rocalution@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  rocblas:
+    buildable: false
+    externals:
+    - spec: rocblas@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  rocfft:
+    buildable: false
+    externals:
+    - spec: rocfft@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    variants: amdgpu_target=gfx90a amdgpu_target_sram_ecc=gfx90a
+
+  rocm-core:
+    buildable: false
+    externals:
+    - spec: rocm-core@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+
+  rocm-smi:
+    buildable: false
+    externals:
+    - spec: rocm-smi@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocprim:
+    buildable: false
+    externals:
+    - spec: rocprim@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocprofiler-dev:
+    buildable: false
+    externals:
+    - spec: rocprofiler-dev@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocrand:
+    buildable: false
+    externals:
+    - spec: rocrand@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocsolver:
+    buildable: false
+    externals:
+    - spec: rocsolver@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocsparse:
+    buildable: false
+    externals:
+    - spec: rocsparse@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocthrust:
+    buildable: false
+    externals:
+    - spec: rocthrust@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  roctracer-dev:
+    buildable: false
+    externals:
+    - spec: roctracer-dev@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  hipify-clang:
+    buildable: false
+    externals:
+    - spec: hipify-clang@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocminfo:
+    buildable: false
+    externals:
+    - spec: rocminfo@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-smi-lib:
+    buildable: false
+    externals:
+    - spec: rocm-smi-lib@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-gdb:
+    buildable: false
+    externals:
+    - spec: rocm-gdb@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-clang-ocl:
+    buildable: false
+    externals:
+    - spec: rocm-clang-ocl@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-cmake:
+    buildable: false
+    externals:
+    - spec: rocm-cmake@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-device-libs:
+    buildable: false
+    externals:
+    - spec: rocm-device-libs@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  rocm-openmp-extras:
+    buildable: false
+    externals:
+    - spec: rocm-openmp-extras@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}
+    
+  comgr:
+    buildable: false
+    externals:
+    - spec: comgr@{{ rocm.version }}
+      prefix: {{ rocm.prefix }}

@@ -1,0 +1,48 @@
+# Cray Packages
+cray_dyninst: 12.3.4
+cray_fftw: 3.3.10.9
+cray_hdf5: 1.14.3.3
+cray_hdf5_parallel: 1.14.3.3
+cray_mrnet: 5.1.4
+cray_libsci:
+  version: 24.11.0
+  prefix:
+    gnu: /opt/cray/pe/libsci/24.11.0/gnu/13.2/x86_64
+    amd: /opt/cray/pe/libsci/24.11.0/amd/6.0/x86_64
+    cray: /opt/cray/pe/libsci/24.11.0/cray/17.0/x86_64
+cray_mpich:
+  version: 8.1.31
+  prefix:
+    gnu: /opt/cray/pe/mpich/8.1.31/ofi/gnu/12.3
+    amd: /opt/cray/pe/mpich/8.1.31/ofi/amd/6.0
+    cray: /opt/cray/pe/mpich/8.1.31/ofi/cray/17.0
+cray_pmi: 6.1.15
+craype: 2.7.33
+cray_dsmml: 0.3.0
+xpmem: 2.10.6-1.2_gfaa90a94be64
+
+# Libfabric
+libfabric: 1.22.0
+
+# ROCm/HIP
+has_rocm: true
+hip:
+  version: 6.2.4
+  prefix: /opt/rocm-6.2.4
+rocm:
+  version: 6.2.4
+  prefix: /opt/rocm-6.2.4
+
+# GCC
+gcc:
+  version: 13.2
+  suffix: '-13'
+  path: /usr/bin
+  prefix: /usr/lib64/gcc/x86_64-suse-linux/13
+
+# CCE
+cce:
+  version: 18.0.1
+  prefix: /opt/cray/pe/cce/18.0.1
+
+

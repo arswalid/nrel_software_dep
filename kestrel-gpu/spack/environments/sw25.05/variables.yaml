@@ -1,0 +1,15 @@
+# system gcc
+system_gcc:
+  version: 8.5.0
+# GCC
+gcc:
+  version: 14.2.0
+# LLVM
+llvm:
+  version: 19.1.0
+#ONEAPI
+oneapi:
+  version: 2025.1.3
+# OS
+os:
+  identifier: rhel8

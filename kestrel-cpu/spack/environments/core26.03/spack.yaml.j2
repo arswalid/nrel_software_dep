@@ -1,0 +1,125 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+# OLCF {{ NSP_system_name }} {{ _SPACK_environment_name }} Spack Environment
+
+spack:
+  view: false
+  include:
+    - concretizer.yaml
+    - modules.yaml
+    - config.yaml
+    - packages.yaml
+
+  modules:
+    default:
+      lmod:
+        core_compilers: [ gcc@{{ system_gcc.version }} ]
+        projections:
+          # core
+          '%gcc@{{ system_gcc.version }}': '26.03/{name}/{version}'
+          '%gcc@{{ gcc.version }}': '26.03/{name}/{version}'
+
+
+  # -------------------------------------------------------------------
+  # Specs Definitions
+  # -------------------------------------------------------------------
+
+  definitions:
+    - core_compiler:
+      - '%gcc@{{ system_gcc.version }}'
+    - newer_compiler:
+      - '%gcc@{{ gcc.version }}'
+
+
+# core software definition
+      
+    - core-26.03:
+      #- cmake@3.30.5
+      - cmake 
+      - curl
+      - git   
+        #- git@2.47.0
+        #- git@2.46.2
+      - jasper@4.2.4
+      - libpng@1.6.39
+      - libpng@1.6.37
+      - libpng
+      - libxml2
+      - intel-oneapi-compilers@2022.1.0
+      - intel-oneapi-compilers@2023.2.0
+      - intel-oneapi-compilers@2024.1.0
+        #- anaconda3@2022.05
+        #- anaconda3@2023.07.2
+        #- gcc@10.1.0
+        #- gcc@12.3.0
+        #- gcc@13.1.0
+        #- gcc+binutils@15 ^binutils+gas+ld
+      - binutils+gas+ld  
+      - nvhpc@21.3
+      - nvhpc@22.7
+      - nvhpc@23.3
+      - nvhpc@24.3
+      - nvhpc@25
+      - aocc@3.2.0 license-agreed=true
+      - aocc@4.2.0 license-agreed=true
+      - bc
+      - bison
+      - bzip2
+        #- cmake@3.27.9
+      - cppcheck
+      - darshan-runtime
+      - darshan-util
+      - emacs@29.2
+      - emacs
+      - ffmpeg
+      - flex@2.6.3
+      - flex@2.6.4
+      #- gdb@12.1
+      - gettext
+      #- ghostscript
+      #- git-lfs
+      - glib
+      - gmake
+      - gnuplot
+      - gnutls
+      - htop
+      - hwloc
+      - imagemagick
+      - libnsl
+      - makedepend
+        #- mamba@1.4.2
+        #- mamba@2.1.1
+      - mercurial
+      - ninja
+      - node-js
+      - npm
+      - patch
+      - pkg-config@0.29.2
+      - python@3.10
+      - python@3.11
+      - python@3.12
+      - python@3.13
+        #- stow@2.3.1
+      - tar
+      - texinfo
+        #- texlive
+      - tmux
+      #- yaml-cpp@0.5.3
+      - yaml-cpp
+      - zlib
+        #- zmq@4.3.5
+      - zsh
+      - vim 
+
+
+
+  # -------------------------------------------------------------------
+  # Final Spec Matrix
+  # -------------------------------------------------------------------
+    - core_matrix:
+      - matrix:
+        - - $core-26.03
+        - - $core_compiler
+
+  specs:
+    - $core_matrix

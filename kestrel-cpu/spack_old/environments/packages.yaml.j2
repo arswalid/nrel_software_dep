@@ -1,0 +1,9 @@
+{{ ansible_managed | comment(beginning="##", end="##", decoration="#", prefix_count=0, postfix_count=0) }}
+
+packages:
+  all:
+    buildable: true
+    providers:
+      blas: [openblas]
+      lapack: [openblas]
+      mpi: [openmpi]
