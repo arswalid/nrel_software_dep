@@ -1,0 +1,109 @@
+name: Ansible CI
+
+on:
+  # Validate changes
+  pull_request:
+
+  # Validate main branch updates
+  push:
+    branches:
+      - main
+      - develop
+
+  # Run weekly validation
+  schedule:
+    # Every Sunday at 02:00 UTC
+    - cron: "0 2 * * 0"
+
+  # Allow manual execution
+  workflow_dispatch:
+    inputs:
+      inventory:
+        description: "Inventory to test"
+        required: false
+        default: "test"
+      playbook:
+        description: "Playbook to validate"
+        required: false
+        default: "playbooks/site.yml"
+
+
+jobs:
+  ansible-test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # x86_64 runner
+          - name: x86_64
+            runner: ubuntu-latest
+
+          # ARM64 runner (requires ARM64 runner availability)
+          - name: aarch64
+            runner: ubuntu-24.04-arm
+
+    name: Test Ansible (${{ matrix.name }})
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+
+      - name: Install Ansible tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install \
+            ansible \
+            ansible-lint \
+            yamllint
+
+
+      - name: Install Ansible Galaxy dependencies
+        run: |
+          if [ -f requirements.yml ]; then
+            ansible-galaxy collection install -r requirements.yml
+            ansible-galaxy role install -r requirements.yml || true
+          fi
+
+
+          #- name: YAML lint
+          #  run: |
+          #    yamllint .
+
+
+          #- name: Ansible lint
+          #  run: |
+          #    ansible-lint
+
+
+          #- name: Ansible syntax check
+          #  env:
+          #    INVENTORY: ${{ github.event.inputs.inventory || 'test' }}
+          #    PLAYBOOK: ${{ github.event.inputs.playbook || 'playbooks/site.yml' }}
+          #  run: |
+          #    ansible-playbook \
+          #      -i inventories/${INVENTORY} \
+          #      ${PLAYBOOK} \
+          #      --syntax-check
+
+
+      # Optional: Molecule testing
+      # Uncomment if roles use Molecule
+      #
+      # - name: Install Molecule
+      #   run: |
+      #     pip install molecule molecule-plugins[docker] docker
+      #
+      # - name: Run Molecule tests
+      #   run: |
+      #     molecule test
