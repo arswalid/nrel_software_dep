@@ -1,0 +1,42 @@
+name: Gila aarch64 Ansible CI
+
+on:
+  pull_request:
+    paths:
+      - "gracehopper/**"
+
+  workflow_dispatch:
+
+  schedule:
+    - cron: "0 2 * * 0"
+
+
+jobs:
+  validate:
+
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+
+      - name: Checkout repository with roles
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+
+      - name: Install Ansible
+        run: |
+          pip install ansible ansible-lint yamllint
+
+
+      - name: run playbook 
+        run: |
+          ansible-playbook \
+            -vvv \
+            gracehopper/playbook.yaml 
