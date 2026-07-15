@@ -2,8 +2,8 @@ name: Gila aarch64 Ansible CI
 
 on:
   pull_request:
-    paths:
-      - "gracehopper/**"
+    #    paths:
+    #      - "gracehopper/**"
 
   workflow_dispatch:
 
@@ -39,4 +39,4 @@ jobs:
         run: |
           ansible-playbook \
             -vvv \
-            gracehopper/playbook.yaml 
+            gracehopper/playbook.yaml -e @group_vars.yml 

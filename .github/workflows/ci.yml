@@ -69,17 +69,9 @@ jobs:
             yamllint
 
 
-      - name: Install Ansible Galaxy dependencies
-        run: |
-          if [ -f requirements.yml ]; then
-            ansible-galaxy collection install -r requirements.yml
-            ansible-galaxy role install -r requirements.yml || true
-          fi
-
-
       - name: test gila x86 
         run: |
-          ansible-playbook -vvv gila/playbook.yaml
+          ansible-playbook -vvv gila/playbook.yaml -e @group_vars.yml
 
 
           #- name: Ansible lint
