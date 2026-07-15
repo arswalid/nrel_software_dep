@@ -39,4 +39,4 @@ jobs:
         run: |
           ansible-playbook \
             -vvv \
-            gracehopper/playbook.yaml -e @group_vars.yml 
+            gracehopper/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilaarm 

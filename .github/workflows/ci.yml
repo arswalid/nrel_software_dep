@@ -3,6 +3,7 @@ name: Ansible CI
 on:
   # Validate changes
   pull_request:
+  workflow_dispatch:
 
   # Validate main branch updates
   push:
@@ -15,17 +16,17 @@ on:
     # Every Sunday at 02:00 UTC
     - cron: "0 2 * * 0"
 
-  # Allow manual execution
-  workflow_dispatch:
-    inputs:
-      inventory:
-        description: "Inventory to test"
-        required: false
-        default: "test"
-      playbook:
-        description: "Playbook to validate"
-        required: false
-        default: "playbooks/site.yml"
+      ## Allow manual execution
+      #workflow_dispatch:
+      #  inputs:
+      #    inventory:
+      #      description: "Inventory to test"
+      #      required: false
+      #      default: "test"
+      #    playbook:
+      #      description: "Playbook to validate"
+      #      required: false
+      #      default: "playbooks/site.yml"
 
 
 jobs:
@@ -71,7 +72,7 @@ jobs:
 
       - name: test gila x86 
         run: |
-          ansible-playbook -vvv gila/playbook.yaml -e @group_vars.yml
+          ansible-playbook -vvv gila/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilax86 
 
 
           #- name: Ansible lint
