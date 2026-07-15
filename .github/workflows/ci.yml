@@ -76,9 +76,9 @@ jobs:
           fi
 
 
-          #- name: YAML lint
-          #  run: |
-          #    yamllint .
+       - name: test gila x86 
+         run: |
+           ansible-playbook -vvv gila/playbook.yaml
 
 
           #- name: Ansible lint
