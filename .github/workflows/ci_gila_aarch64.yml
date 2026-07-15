@@ -7,6 +7,12 @@ on:
 
   workflow_dispatch:
 
+  # Validate main branch updates
+  push:
+    branches:
+      - main
+      - develop
+
   schedule:
     - cron: "0 2 * * 0"
 
@@ -39,4 +45,4 @@ jobs:
         run: |
           ansible-playbook \
             -vvv \
-            gracehopper/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilaarm 
+            gracehopper/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilaarm -e NSP_scratch_directory=${{ github.workspace }}/temp_scratch 

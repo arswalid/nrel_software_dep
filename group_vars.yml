@@ -1,3 +1,2 @@
 ansible_user_uid: 1000
 ansible_user_gid: 1000
-NSP_scratch_directory: ${{ github.workspace }}/temp_scratch

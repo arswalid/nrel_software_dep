@@ -72,7 +72,7 @@ jobs:
 
       - name: test gila x86 
         run: |
-          ansible-playbook -vvv gila/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilax86 
+          ansible-playbook -vvv gila/playbook.yaml -e @group_vars.yml -e NSP_install_root=${{ github.workspace }}/gilax86 -e NSP_scratch_directory=${{ github.workspace }}/temp_scratch 
 
 
           #- name: Ansible lint
